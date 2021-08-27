@@ -14,7 +14,7 @@
 - name: 'Ensure pip packages'
   copy:
     src: "{{ pip_pkg }}"
-    dest: "/opt/pypiserver/packages/{{ pip_pkg }}"
+    dest: "{{ pypiserver_path }}/packages/{{ pip_pkg }}"
   loop:
     - 'pypiserver-1.4.2-py2.py3-none-any.whl'
     - 'pip-21.2.4-py3-none-any.whl'
