@@ -4,6 +4,10 @@
     name: "{{ pypiserver_user }}"
     create_home: false
 
+- name: 'Get local pip path'
+  command: which pip3
+  register: 'pip3'
+
 - name: 'Ensure local pip directory'
   file:
     path: "{{ pypiserver_path }}/packages"
@@ -32,14 +36,14 @@
     name: "file://{{ pypiserver_path }}/packages/pip-21.2.4-py3-none-any.whl"
     state: 'latest'
     umask: "0022"
-    executable: '/bin/pip3'
+    executable: "{{ pip3['stdout'] }}"
 
 - name: 'Ensure pypiserver from pip'
   pip:
     name: "file://{{ pypiserver_path }}/packages/pypiserver-1.4.2-py2.py3-none-any.whl"
     state: 'present'
     umask: "0022"
-    executable: '/bin/pip3'
+    executable: "{{ pip3['stdout'] }}"
 
 - name: 'Ensure systemd unit'
   template:
