@@ -23,27 +23,18 @@
     group: "{{ pypiserver_user }}"
   loop:
     - 'pypiserver-1.4.2-py2.py3-none-any.whl'
-    - 'pip-21.2.4-py3-none-any.whl'
   loop_control:
     loop_var: 'pip_pkg'
 
 - name: 'Ensure system pip'
   package:
-    name: 'python3-pip'
-
-- name: 'Upgrade pip'
-  pip:
-    name: "file://{{ pypiserver_path }}/packages/pip-21.2.4-py3-none-any.whl"
-    state: 'latest'
-    umask: "0022"
-    executable: "{{ pip3['stdout'] }}"
+    name: 'python-pip'
 
 - name: 'Ensure pypiserver from pip'
   pip:
     name: "file://{{ pypiserver_path }}/packages/pypiserver-1.4.2-py2.py3-none-any.whl"
     state: 'present'
     umask: "0022"
-    executable: "{{ pip3['stdout'] }}"
 
 - name: 'Ensure systemd unit'
   template:
