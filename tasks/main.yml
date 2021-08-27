@@ -54,12 +54,3 @@
     name: 'pypiserver'
     state: 'started'
     enabled: true
-
-- name: 'Ensure pip config'
-  copy:
-    content: |
-      # Managed by Ansible, YOUR CHANGES WILL BE LOST!
-      [global]
-      index-url = http://localhost:{{ pypiserver_port }}/simple
-      index = http://localhost:{{ pypiserver_port }}
-    dest: '/etc/pip.conf'
