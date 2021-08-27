@@ -1,0 +1,19 @@
+[Unit]
+Description=A minimal PyPI server for use with pip/easy_install.
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=/var/run/pypiserver.pid
+User={{ pypiserver_user }}
+Group={{ pypiserver_user }}
+ExecStart=/usr/local/bin/pypi-server -p {{ pypiserver_port }} -a update,download --log-file {{ pypiserver_path }}/pypiserver.log {{ pypiserver_path }}/packages
+ExecStop=/bin/kill -TERM $MAINPID
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+WorkingDirectory={{ pypiserver_path }}
+TimeoutStartSec=3
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

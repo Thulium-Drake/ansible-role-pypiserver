@@ -1,0 +1,5 @@
+---
+pypiserver_path: '/opt/pypiserver'
+pypiserver_user: 'pypi'
+pypiserver_port: 8000
+pypiserver_validate: false

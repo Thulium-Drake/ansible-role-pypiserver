@@ -1,0 +1,65 @@
+---
+- name: 'Ensure pypiserver service account'
+  user:
+    name: "{{ pypiserver_user }}"
+    create_home: false
+
+- name: 'Ensure local pip directory'
+  file:
+    path: "{{ pypiserver_path }}/packages"
+    state: 'directory'
+    owner: "{{ pypiserver_user }}"
+    group: "{{ pypiserver_user }}"
+
+- name: 'Ensure pip packages'
+  copy:
+    src: "{{ pip_pkg }}"
+    dest: "/opt/pypiserver/packages/{{ pip_pkg }}"
+  loop:
+    - 'pypiserver-1.4.2-py2.py3-none-any.whl'
+    - 'pip-21.2.4-py3-none-any.whl'
+  loop_control:
+    loop_var: 'pip_pkg'
+
+- name: 'Ensure system pip'
+  package:
+    name: 'python3-pip'
+
+- name: 'Upgrade pip'
+  pip:
+    name: "file://{{ pypiserver_path }}/packages/pip-21.2.4-py3-none-any.whl"
+    state: 'latest'
+    umask: "0022"
+    executable: '/bin/pip3'
+
+- name: 'Ensure pypiserver from pip'
+  pip:
+    name: "file://{{ pypiserver_path }}/packages/pypiserver-1.4.2-py2.py3-none-any.whl"
+    state: 'present'
+    umask: "0022"
+    executable: '/bin/pip3'
+
+- name: 'Ensure systemd unit'
+  template:
+    src: 'pypiserver.service.j2'
+    dest: '/etc/systemd/system/pypiserver.service'
+    owner: 'root'
+    group: 'root'
+  notify: 'reload systemd'
+
+- meta: 'flush_handlers'
+
+- name: 'Ensure service'
+  systemd:
+    name: 'pypiserver'
+    state: 'started'
+    enabled: true
+
+- name: 'Ensure pip config'
+  copy:
+    content: |
+      # Managed by Ansible, YOUR CHANGES WILL BE LOST!
+      [global]
+      index-url = http://localhost:{{ pypiserver_port }}/simple
+      index = http://localhost:{{ pypiserver_port }}
+    dest: '/etc/pip.conf'
