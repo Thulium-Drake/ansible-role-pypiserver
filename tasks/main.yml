@@ -15,6 +15,8 @@
   copy:
     src: "{{ pip_pkg }}"
     dest: "{{ pypiserver_path }}/packages/{{ pip_pkg }}"
+    owner: "{{ pypiserver_user }}"
+    group: "{{ pypiserver_user }}"
   loop:
     - 'pypiserver-1.4.2-py2.py3-none-any.whl'
     - 'pip-21.2.4-py3-none-any.whl'
