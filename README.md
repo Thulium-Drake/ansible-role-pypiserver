@@ -10,5 +10,4 @@ After running this role and deploying Pypiserver, you can start using it with th
 [global]
 index-url = http://pip.example.com:8000/simple
 index = http://pip.example.com:8000
-dest: '/etc/pip.conf'
 ```
