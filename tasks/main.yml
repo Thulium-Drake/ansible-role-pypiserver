@@ -1,53 +1,58 @@
 ---
 - name: 'Ensure pypiserver service account'
-  user:
+  ansible.builtin.user:
     name: "{{ pypiserver_user }}"
     create_home: false
 
 - name: 'Get local pip path'
-  command: which pip3
+  ansible.builtin.command: which pip3
   register: 'pip3'
+  changed_when: false
 
 - name: 'Ensure local pip directory'
-  file:
+  ansible.builtin.file:
     path: "{{ pypiserver_path }}/packages"
     state: 'directory'
     owner: "{{ pypiserver_user }}"
     group: "{{ pypiserver_user }}"
+    mode: '0755'
 
 - name: 'Ensure pip packages'
-  copy:
+  ansible.builtin.copy:
     src: "{{ pip_pkg }}"
     dest: "{{ pypiserver_path }}/packages/{{ pip_pkg }}"
     owner: "{{ pypiserver_user }}"
     group: "{{ pypiserver_user }}"
+    mode: '0644'
   loop:
     - 'pypiserver-1.4.2-py2.py3-none-any.whl'
   loop_control:
     loop_var: 'pip_pkg'
 
 - name: 'Ensure system pip'
-  package:
+  ansible.builtin.package:
     name: 'python-pip'
 
 - name: 'Ensure pypiserver from pip'
-  pip:
+  ansible.builtin.pip:
     name: "file://{{ pypiserver_path }}/packages/pypiserver-1.4.2-py2.py3-none-any.whl"
     state: 'present'
     umask: "0022"
 
 - name: 'Ensure systemd unit'
-  template:
+  ansible.builtin.template:
     src: 'pypiserver.service.j2'
     dest: '/etc/systemd/system/pypiserver.service'
     owner: 'root'
     group: 'root'
+    mode: 0644
   notify: 'reload systemd'
 
-- meta: 'flush_handlers'
+- name: 'Run handlers'
+  meta: 'flush_handlers'
 
 - name: 'Ensure service'
-  systemd:
+  ansible.builtin.systemd:
     name: 'pypiserver'
     state: 'started'
     enabled: true
