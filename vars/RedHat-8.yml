@@ -1,0 +1,3 @@
+---
+pypiserver_pip_pkg: 'python39-pip'
+pypiserver_pip_exe: '/usr/bin/pip3.9'

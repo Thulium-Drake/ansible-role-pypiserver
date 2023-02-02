@@ -1,13 +1,12 @@
 ---
+- name: 'Include OS specific vars'
+  ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
+  no_log: true
+
 - name: 'Ensure pypiserver service account'
   ansible.builtin.user:
     name: "{{ pypiserver_user }}"
     create_home: false
-
-- name: 'Get local pip path'
-  ansible.builtin.command: which pip3
-  register: 'pip3'
-  changed_when: false
 
 - name: 'Ensure local pip directory'
   ansible.builtin.file:
@@ -31,13 +30,15 @@
 
 - name: 'Ensure system pip'
   ansible.builtin.package:
-    name: 'python-pip'
+    name: "{{ pypiserver_pip_pkg }}"
+    state: 'present'
 
 - name: 'Ensure pypiserver from pip'
   ansible.builtin.pip:
     name: "file://{{ pypiserver_path }}/packages/pypiserver-1.4.2-py2.py3-none-any.whl"
     state: 'present'
     umask: "0022"
+    executable: "{{ pypiserver_pip_exe | default(omit) }}"
 
 - name: 'Ensure systemd unit'
   ansible.builtin.template:
