@@ -46,11 +46,11 @@
     dest: '/etc/systemd/system/pypiserver.service'
     owner: 'root'
     group: 'root'
-    mode: 0644
-  notify: 'reload systemd'
+    mode: '0644'
+  notify: 'Reload systemd'
 
 - name: 'Run handlers'
-  meta: 'flush_handlers'
+  ansible.builtin.meta: 'flush_handlers'
 
 - name: 'Ensure service'
   ansible.builtin.systemd:

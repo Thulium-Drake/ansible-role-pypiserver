@@ -2,24 +2,25 @@
 galaxy_info:
   author: thulium_drake
   description: Minimal PyPi mirror, powered by Ansible
-  company:
   role_name: pypiserver
 
   license: GPLv3
 
-  min_ansible_version: 2.11
+  min_ansible_version: '2.11'
 
   platforms:
     - name: Debian
       versions:
         - buster
+        - bullseye
     - name: Ubuntu
       versions:
         - bionic
         - focal
     - name: EL
       versions:
-        - 7
+        - '7'
+        - '8'
 
   galaxy_tags:
     - pypiserver
