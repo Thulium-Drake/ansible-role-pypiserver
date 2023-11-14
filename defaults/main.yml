@@ -1,5 +1,22 @@
 ---
+# Path on the server where to store the packages
 pypiserver_path: '/opt/pypiserver'
+
+# User that will own all the files
 pypiserver_user: 'pypi'
+
+# Port on which to list
 pypiserver_port: 8000
-pypiserver_validate: false
+
+# Which actions require authentication in pypiserver
+pypiserver_required_auth:
+  - 'update'
+  # - 'download'
+
+# Any other extra options to pass to pypiserver
+#
+# '--disable-fallback': will disable redirecting the client to pypi.org if
+# the requested package does not exist on pypiserver
+#
+# Please see the pypiserver manual for more options
+pypiserver_extra_opts: '--disable-fallback'
