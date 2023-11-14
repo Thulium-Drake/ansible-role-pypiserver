@@ -19,4 +19,5 @@ pypiserver_required_auth:
 # the requested package does not exist on pypiserver
 #
 # Please see the pypiserver manual for more options
-pypiserver_extra_opts: '--disable-fallback'
+pypiserver_extra_opts:
+  - '--disable-fallback'
